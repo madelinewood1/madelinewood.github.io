@@ -1,31 +1,82 @@
-// Reveal sections as the user scrolls
+// ======================================
+// SCROLL ANIMATIONS
+// ======================================
 
-const observer = new IntersectionObserver(
-  (entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("visible");
-      }
+const revealElements = document.querySelectorAll(".reveal");
+
+if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+
+    revealElements.forEach((element) => {
+        element.classList.add("visible");
     });
-  },
-  {
-    threshold: 0.15,
-  }
-);
 
-document.querySelectorAll(".section, .experience-card").forEach((el) => {
-  observer.observe(el);
+} else if ("IntersectionObserver" in window) {
+
+    const observer = new IntersectionObserver(
+        (entries) => {
+
+            entries.forEach((entry) => {
+
+                if (entry.isIntersecting) {
+
+                    entry.target.classList.add("visible");
+
+                    observer.unobserve(entry.target);
+
+                }
+
+            });
+
+        },
+        {
+            threshold: 0.1
+        }
+    );
+
+    revealElements.forEach((element) => {
+        observer.observe(element);
+    });
+
+} else {
+
+    revealElements.forEach((element) => {
+        element.classList.add("visible");
+    });
+
+}
+
+
+// ======================================
+// EXPERIENCE CARD INTERACTIONS
+// ======================================
+
+document.querySelectorAll(".experience-card").forEach((card) => {
+
+    card.addEventListener("mouseenter", () => {
+        card.style.transform = "translateX(5px)";
+    });
+
+    card.addEventListener("mouseleave", () => {
+        card.style.transform = "translateX(0)";
+    });
+
 });
 
 
-// Subtle cursor interaction on experience cards
+// ======================================
+// NAVIGATION LINK INTERACTIONS
+// ======================================
 
-document.querySelectorAll(".experience-card").forEach((card) => {
-  card.addEventListener("mouseenter", () => {
-    card.style.transform = "translateX(5px)";
-  });
+document.querySelectorAll('.nav-links a').forEach((link) => {
 
-  card.addEventListener("mouseleave", () => {
-    card.style.transform = "translateX(0)";
-  });
+    link.addEventListener("click", () => {
+
+        document.querySelectorAll('.nav-links a').forEach((navLink) => {
+            navLink.classList.remove("active");
+        });
+
+        link.classList.add("active");
+
+    });
+
 });
